@@ -1,0 +1,149 @@
+---
+title: "Calcul symbolique"
+author: "Henri laude"
+date: "14/11/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction sommaire 
+SymPy est le package Python de référence pour effectuer des calculs symboliques simples.
+Son installation directe peut poser quelques difficultés, mais est en général facile en se contentant de l'installer via R  ou Rstudio(en stipulant que l'on veut toutes les dépendances)
+
+Comme d'habitude il faut faire :
+
+```{r}
+library(rSymPy)  
+```
+
+On constate la hiérarchie des packages utilisés.
+
+Effectuons quelques calculs symboliques simples pour tester :
+
+```{r}
+x <- Var("x")                    # Ne pas oublier les ""
+x+3*x
+x/x
+
+y <-Var("x**3")
+y/x
+```
+
+
+Calcul d'une limite :
+
+```{r}
+sympy("limit(x/exp(x), x, oo)")
+```
+
+
+Tout se passe bien ?
+Il faut maintenant essayer quelques exemples et plonger dans la documentation du package
+Python d'origine .
+
+## Documentation à consulter
+
+Les exemples :
+
+https://cran.r-project.org/web/packages/rSymPy/rSymPy.pdf
+
+http://www.di.fc.ul.pt/~jpn/r/symbolic/
+
+
+
+
+La documentation du package Python :
+
+https://docs.sympy.org/latest/install.html#git
+
+## Quelques astuces
+
+### Accéder aux résultats dans Rmarkdown
+
+Ecrivons ceci pour stocker notre une expression symbolique :
+
+```{r}
+z <- y/x
+```
+
+
+```{}
+Pour insérer une expression R il faut utiliser cette syntaxe :` r expression ` 
+```
+
+
+
+
+Ce qui donnerera :
+
+L'expression résultante de la simplication de  $`r y/x`$ est $`r sympy(z)`$
+
+Veuillez noter que les deux expressions ne sont pas strictement équivalentes car la première n'était pas calculable en x=0 : la simplification ne gère pas le domaine de défintion.
+
+### Accéder au résultat en lui donnant un aspect mathématique 
+
+On veut obtenir du \LaTeX\
+
+```{r}
+require(rSymPy)
+mon_calcul_a_faire_latex <- sympy("latex(Integral(sqrt(1/x),x))")
+mon_calcul_fait_latex    <- sympy("latex(integrate(sqrt(1/x),x))") 
+```
+
+```{}
+Pour insérer une expression R il faut utiliser cette syntaxe :` r mon_calcul_a_faire_latex ` 
+```
+
+
+
+Le résultat du calcul `r mon_calcul_a_faire_latex` est `r mon_calcul_fait_latex` 
+
+
+
+
+### Rappel sur les caractères Ascii
+
+On peut les consulter ici :
+https://fr.wikibooks.org/wiki/Les_ASCII_de_0_%C3%A0_127/La_table_ASCII
+
+Voici quelques caratères bien utiles à avoir sous la main :
+```{r}
+
+guillemet      <- rawToChar(as.raw(34))
+guillemet 
+dollar         <- rawToChar(as.raw(36))
+dollar
+apostrophe     <- rawToChar(as.raw(39))
+apostrophe
+virgule        <- rawToChar(as.raw(44))
+virgule
+egal           <- rawToChar(as.raw(61))
+egal
+backslash      <- rawToChar(as.raw(92))
+backslash
+accentgrave    <- rawToChar(as.raw(96))
+accentgrave
+barreverticale <- rawToChar(as.raw(124))
+barreverticale
+```
+
+```{r}
+une_expression_latex <- paste0(
+  quote(x_i),
+  " ",
+  egal,
+  " ",
+  quote(y)
+)
+```
+
+Ce qui donne :
+
+\( `r une_expression_latex` \)
+
+
