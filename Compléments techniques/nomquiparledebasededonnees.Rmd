@@ -1,0 +1,50 @@
+---
+title: "Untitled"
+author: "Théo Marié"
+date: "12/12/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r echo=FALSE, message=FALSE, verbose=FALSE}
+library(dabr)
+# connexion au moteur mariaDB sur la base chess
+conn <- open_conn_mysql("bd1",
+                        user = "root",
+                        password = "",
+                        host = "localhost",
+                        port = 3306)
+# interrogation de la table déjà crée dans mariaDB
+querydep <- paste("SELECT * FROM dept")
+outdep   <- select(conn,query = querydep)
+##str(outdep)
+
+querysalarie <- paste("SELECT * FROM salarie")
+outsalarie   <- select(conn,query = querysalarie)
+##str(outsalarie)
+
+library(dplyr)
+doubi <- left_join(outsalarie, outdep)
+
+```
+
+
+# Rapport actualisé sur les embauches de l'entreprise par département
+
+
+```{r echo=FALSE, message=FALSE, verbose=FALSE}
+library(ggplot2)
+ggplot(doubi) +
+  aes(x = date_embauche, y = salaire) +
+  geom_line(size = 1L, colour = "#0c4c8a") +
+  theme_minimal() +
+  facet_wrap(vars(deptno))
+
+```
+
+
